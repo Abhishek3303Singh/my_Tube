@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { closeSideMenu } from './utils/navSlice'
 import { useSearchParams } from 'react-router-dom'
+import CommentsContainer from './CommentsContainer'
 
 const VideoPlayPage = () => {
     let [searchParam] = useSearchParams()
@@ -11,6 +12,7 @@ const VideoPlayPage = () => {
         dispatch(closeSideMenu())
     }, [])
     return (
+        <div>
         <div className='p-2 m-4'>
             <iframe
                 width="920" height="475"
@@ -21,6 +23,8 @@ const VideoPlayPage = () => {
                 allowFullScreen>
 
             </iframe>
+        </div>
+        <CommentsContainer/>
         </div>
     )
 }

@@ -9,14 +9,14 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { setSearchCache } from "./utils/searchSlice";
 import { YOUTUBE_SEARCH_SUGGESTION_API } from "./utils/constants";
+import { getSearchVideos } from "./utils/searchSlice";
 
 const Header = () => {
 
   const [searchText, setSearchText] = useState("")
-  const [suggestinList, setSuggestionList] =useState([])
-  const [showSuggestion,setShowSuggestion] = useState(false)
-  
-const {cache} = useSelector(store=>store.searchCache)
+  const [suggestinList, setSuggestionList] = useState([])
+  const [showSuggestion, setShowSuggestion] = useState(false)
+  const { cache } = useSelector(store => store.searchCache)
   const dispatch = useDispatch();
   const toggleHandler = () => {
     dispatch(toggle());
@@ -25,24 +25,23 @@ const {cache} = useSelector(store=>store.searchCache)
   // console.log(searchText,'search-text')
   useEffect(() => {
     // Debouncing with 200ms
-    if(cache.searchText !==undefined ){
-      setSuggestionList(cache.searchText)
-    }
-    else{
-      const timer = setTimeout(() => getSearchSuggestionData(), 200)
-      
-    // return UseEffect and clr the timer
-      return () => {
-        clearTimeout(timer)
+    const timer = setTimeout(() => {
+      if (cache[searchText] !== undefined) {
+        setSuggestionList(cache[searchText])
+        // console.log(cache[searchText], 'cache1', searchText)
+      }
+      else {
+        // console.log(cache, 'cache2', searchText)
+        getSearchSuggestionData()       
       }
 
-    }
-    dispatch(setSearchCache({'iphone':[1,2,3]}))
-    dispatch(setSearchCache({'samsung':[1,2,3]}))
-    console.log(cache.iphone, 'cache')
-
- 
+    }, 200)
     
+    // return UseEffect and clr the timer
+    return () => {
+
+      clearTimeout(timer)
+    }
 
   }, [searchText])
   const getSearchSuggestionData = async () => {
@@ -50,12 +49,26 @@ const {cache} = useSelector(store=>store.searchCache)
     const searchSugData = await fetch(YOUTUBE_SEARCH_SUGGESTION_API + searchText)
     const searchJsonData = await searchSugData.json()
     setSuggestionList(searchJsonData[1])
-    // console.log(searchJsonData[1],'search') 
+    console.log(searchJsonData[1], 'search', searchText)
     dispatch(setSearchCache({
-      searchText:searchJsonData[1]
+      [searchText]: searchJsonData[1]
     }))
   }
 
+  useEffect(()=>{
+
+  },[])
+
+  const handleBlure=()=>{
+    setTimeout(()=>setShowSuggestion(false),200)
+  }
+  const handleSetSuggestionInInput=(suggestionData)=>{
+    setSearchText(suggestionData)
+    // setShowSuggestion(false)
+  }
+const handleSearch=(searchText)=>{
+  dispatch(getSearchVideos(searchText))
+}
   return (
     <div className="grid grid-flow-col p-4 shadow-lg">
       <div className="flex col-span-1">
@@ -81,24 +94,29 @@ const {cache} = useSelector(store=>store.searchCache)
             type="text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onFocus={()=>setShowSuggestion(true)}
-            onBlur={()=>setShowSuggestion(false)}
+            onFocus={() => setShowSuggestion(true)}
+            onBlur={handleBlure}
+            
           />
-          <button className="border border-gray-500 py-2 px-3 bg-gray-200 rounded-r-full">
+          <button 
+          className="border border-gray-500 py-2 px-3 bg-gray-200 rounded-r-full"
+          onClick={()=>handleSearch(searchText)}
+          
+          >
             🔍
           </button>
         </div>
         {
-          showSuggestion && 
+          showSuggestion &&
           <div className="fixed bg-white ml-[14rem] w-[30rem] text-left rounded-xl border border-gray-200 z-[1000]">
-          <ul>
-            
-            {
-              suggestinList[0] && suggestinList?.map((suggestionData)=><li key={suggestionData} className="shadow-sm py-2 hover:bg-gray-200 rounded-xl"><span className="px-2 py-3">🔍</span>{suggestionData} </li>)
-            }
+            <ul>
 
-          </ul>
-        </div>
+              {
+                suggestinList[0] && suggestinList?.map((suggestionData) => <li onClick={()=>handleSetSuggestionInInput(suggestionData)} key={suggestionData} className="shadow-sm py-2 hover:bg-gray-200 rounded-xl"><span className="px-2 py-3">🔍</span>{suggestionData} </li>)
+              }
+
+            </ul>
+          </div>
         }
       </div>
 
