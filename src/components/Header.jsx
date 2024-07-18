@@ -10,14 +10,17 @@ import { useState } from "react";
 import { setSearchCache } from "./utils/searchSlice";
 import { YOUTUBE_SEARCH_SUGGESTION_API } from "./utils/constants";
 import { getSearchVideos } from "./utils/searchSlice";
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
 
   const [searchText, setSearchText] = useState("")
   const [suggestinList, setSuggestionList] = useState([])
   const [showSuggestion, setShowSuggestion] = useState(false)
+  const navigate = useNavigate()
   const { cache } = useSelector(store => store.searchCache)
   const dispatch = useDispatch();
+
   const toggleHandler = () => {
     dispatch(toggle());
   };
@@ -68,6 +71,7 @@ const Header = () => {
   }
 const handleSearch=(searchText)=>{
   dispatch(getSearchVideos(searchText))
+  navigate("/results?search_query="+searchText)
 }
   return (
     <div className="grid grid-flow-col p-4 shadow-lg">
@@ -78,12 +82,13 @@ const handleSearch=(searchText)=>{
           alt="menu"
           src={humbarger}
         />
-
+<Link to="/">
         <img
           className="h-9 mx-3 bg-white-100 cursor-pointer"
           alt="logo"
           src={logo}
         />
+        </Link>
 
       </div>
       <div className="col-span-10 text-center">
@@ -98,7 +103,7 @@ const handleSearch=(searchText)=>{
             onBlur={handleBlure}
             
           />
-          <button 
+       <button 
           className="border border-gray-500 py-2 px-3 bg-gray-200 rounded-r-full"
           onClick={()=>handleSearch(searchText)}
           

@@ -17,7 +17,7 @@ const Sidebar = () => {
       </ul>
       <hr className='mt-2' />
 
-      <h1 className='font-bold pt-5'>Subascriptions</h1>
+      <h1 className='font-bold pt-5'>Subscriptions</h1>
       <ul>
         <li>Music</li>
         <li>Dance</li>

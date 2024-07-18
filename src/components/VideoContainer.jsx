@@ -26,7 +26,7 @@ const dispatch=useDispatch()
   // }
   // console.log(videos,'videos')
   if(status=='loading'){return (
-    <div className='flex flex-wrap'>
+    <div className='flex flex-wrap justify-evenly'>
       {
         shimmer.map((data)=><Shimmer/>)
       }

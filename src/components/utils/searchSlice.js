@@ -9,7 +9,7 @@ const searchSlice=createSlice({
     name:"searchCache",
     initialState:{
       cache:{},
-      saerchData:[],
+      searchData:[],
       status:STATUSES.SUCCESS  
     },
     reducers:{
@@ -17,7 +17,7 @@ const searchSlice=createSlice({
             state.cache={...state.cache, ...action.payload}
         },
         setSearchData(state,action){
-            state.saerchData=action.payload
+            state.searchData=action.payload
         },
         setStatus(state,action){
             state.status=action.payload
