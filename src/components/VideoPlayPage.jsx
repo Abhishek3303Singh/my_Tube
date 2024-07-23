@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { closeSideMenu } from './utils/navSlice'
 import { useSearchParams } from 'react-router-dom'
 import CommentsContainer from './CommentsContainer'
+import LiveChat from './LiveChat'
 
 const VideoPlayPage = () => {
     let [searchParam] = useSearchParams()
@@ -12,19 +13,30 @@ const VideoPlayPage = () => {
         dispatch(closeSideMenu())
     }, [])
     return (
-        <div>
-        <div className='p-2 m-4'>
-            <iframe
-                width="920" height="475"
-                src={"https://www.youtube.com/embed/"+searchParam.get('v')+"?si=m2CVD6I_OqzasXti"}
-                title="YouTube video player" frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowFullScreen>
+        <div className='w-full'>
 
-            </iframe>
-        </div>
-        <CommentsContainer/>
+            <div className='flex'>
+                <div className='p-2 m-1 rounded-lg'>
+                    <iframe
+                    className='rounded-lg'
+                        width="820" height="475"
+                        src={"https://www.youtube.com/embed/" + searchParam.get('v') + "?si=m2CVD6I_OqzasXti"}
+                        title="YouTube video player" frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowFullScreen>
+
+                    </iframe>
+
+                </div>
+
+                <div className='w-full z-[100] pt-2'>
+                    <LiveChat/>
+                </div>
+
+            </div>
+
+            <CommentsContainer />
         </div>
     )
 }
